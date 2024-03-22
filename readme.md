@@ -2,7 +2,7 @@
 Please note this is gradle project and latest java and spring boot!!
 There are many ways you can configure your app to expose metrics, see Excalidraw in the project linked. 
 
-# Getting Started
+# Disclaimer
 The POC is purely for learning/exploration purpose locally and can have bugs or misconfigurations for diff env or machines. Needed proper testing correct optimizations.
 
 Few options have been tried under this POC
