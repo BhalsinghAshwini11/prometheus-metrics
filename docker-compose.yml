@@ -1,0 +1,41 @@
+version: '3'
+services:
+  collector:
+    container_name: collector
+    image: otel/opentelemetry-collector-contrib:latest
+    extra_hosts: [ 'host.docker.internal:host-gateway' ]
+    volumes:
+      - ./otel/otel-config.yml:/etc/otel/otel-config.yml
+    command: [ "--config=/etc/otel/otel-config.yml" ]
+    expose:
+      - "4317"
+      - "4318"
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "8889:8889" # Prometheus exporter endpoint from collector
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    extra_hosts: [ 'host.docker.internal:host-gateway' ]
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#  grafana:
+#    image: grafana/grafana:latest
+#    container_name: grafana
+#    extra_hosts: [ 'host.docker.internal:host-gateway' ]
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./grafana/provisioning/datasources.yml:/etc/grafana/provisioning/datasources.yml:ro
+  app:
+    build: ./
+    expose:
+      - "6543"
+    ports:
+      - "6543:6543"
+
+# Prometheus: http://localhost:9090/
+# Grafana: http://localhost:3000/

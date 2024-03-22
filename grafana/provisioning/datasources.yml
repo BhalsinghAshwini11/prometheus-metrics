@@ -1,0 +1,12 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+
+#  The data source we defined here instructs Grafana to connect with Prometheus using
+#  http://prometheus:9090 and use it as the default data source.
+#  We can also add Prometheus data source manually after the Grafana container is up if this does not work.

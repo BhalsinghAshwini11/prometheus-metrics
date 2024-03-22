@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+#  - job_name: 'metrics' # option 1
+#    metrics_path: '/actuator/prometheus'
+#    scrape_interval: 2s
+#    scrape_timeout: 2s
+#    static_configs:
+#      - targets: [ 'host.docker.internal:6543' ]
+#        labels:
+#          application: 'MetricsApplication'
+  - job_name: 'collector' # option 2
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'collector:8889' ] ## this has to be like this,not
+        labels:
+          application: 'OtelCollector'
+
+# option 1
+#  This scrape config instructs Prometheus to scrape the metrics from application directly
+#  http://localhost:6543/actuator/prometheus endpoint on the host.docker.internal:6543
+#  address every 2 seconds (global, can be changed per job).
+#  The application label is used to identify prometheus metrics scraped from app directly
+
+# option 2
+#  This scrape config instructs Prometheus to scrape the metrics via Otel Collector
+#  http://collector:8889/metrics endpoint, (note host.docker.internal:8889 will not always work in docker mentioned on otel page)
+#  address every 5 seconds (global, can be changed per job).
+#  The application label is used to identify prometheus metrics scraped from collector

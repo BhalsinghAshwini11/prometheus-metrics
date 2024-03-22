@@ -1,0 +1,43 @@
+receivers:
+  #  prometheus_simple: # Option 3,can configure from prometheus(prometheus_simple is wrapper around prometheus),  read more on diff between both receivers original and wrapper on github
+  #    collection_interval: 10s
+  #    endpoint: 'host.docker.internal:9090'
+  #    metrics_path: '/metrics'
+  #    tls:
+  #      insecure_skip_verify: true
+  otlp: # coming from SB lib micrometer or agent in OTLP format
+    protocols:
+      grpc:
+      http:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889" #exporter for prometheus metrics coming in OTLP format but sent In prometheus format
+  otlp:
+    endpoint: tempo:4317 #Connect collector’s GRPC exporters to tempo’s GRPC port
+    tls:
+      insecure: true
+  logging:
+    #    endpoint: loki:3100
+    verbosity: detailed
+
+processors:
+  batch:
+
+service:
+  pipelines:
+    metrics:
+      #      receivers: [ prometheus_simple ] #option 3.2 SB metrics in prometheus format
+      #      exporters: [ logging ] # logging for demo, we can replace it (Metrics Backend)
+      receivers: [ otlp ] #option 2 SB expose OTLP format, via OTLP bridge
+      exporters: [ prometheus ]  # logging for demo,and prometheus
+      processors: [ batch ]
+    #    traces:
+    #      receivers: [ otlp ]
+    #      exporters: [ logging,otlp ]
+    #      processors: [ batch ]
+    logs:
+      receivers: [ otlp ]
+      exporters: [ logging ]
+
+  ##Commented section is for trying out various options as described in read me file
