@@ -29,7 +29,7 @@ services:
 #    ports:
 #      - "3000:3000"
 #    volumes:
-#      - ./grafana/provisioning/datasources.yml:/etc/grafana/provisioning/datasources.yml:ro
+#      - ./grafana/provisioning:/etc/grafana/provisioning
   app:
     build: ./
     expose:

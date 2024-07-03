@@ -6,40 +6,39 @@ There are many ways you can configure your app to expose metrics, see Excalidraw
 The POC is purely for learning/exploration purpose locally and can have bugs or misconfigurations for diff env or machines. Needed proper testing correct optimizations.
 
 Few options have been tried under this POC
-## Option 1, App(prometheus)-Prometheus
+## Option 1, App(prometheus metrics)-> Prometheus server
 Instrumenting our Java code for prometheus metrics only with Springboot micrometer library https://spring.io/blog/2022/10/12/observability-with-spring-boot-3
 * Expose via lib spring micrometer prometheus (micrometer-registry-prometheus) automatically in prometheus format under actuator endpoint
 * Set up prometheus server locally with scrape configurations towards app. see prometheus.yml
-* That's it nothing in between, pure app to Prometheus then to Grafana to visualize Dashboards and more
+* That's it nothing in between, pure app to Prometheus server and then to Grafana to visualize Dashboards and more
 
-## Option 2, App(OTLP)-Prometheus
+## Option 2, App(OTLP metrics)-> Otel collector ->  Prometheus server
 Instrumenting our Java code for prometheus metrics only with Springboot micrometer and OTEL library
-* Expose via spring lib (micrometer-registry-otlp) in OTLP format under collector exposed endpoint
+* Expose via spring lib (micrometer-registry-otlp) in OTLP format towards collector exposed endpoint
 * Set up Collector service locally with otel configurations, see otel-config.yml
-* Set up prometheus server locally with scape configurations towards collector, see prometheus.yml
-* Twist here is, we are exporting now OTLP formatted metrics via collector to Prometheus server then to Grafana to visualize Dashboards and more
+* Set up prometheus server locally with scrape configurations from Otel collector, see prometheus.yml
+* Twist here is, we are exporting now OTLP formatted metrics via collector to Prometheus server then to Grafana to visualize Dashboards
 * Optional Step connect the backed to metrics to Visualization tool grafana, config in docker compose
 
-## Option 3, App-Prometheus-OtelExporter
+## Option 3, App(Prometheus metrics) -> OtelCollector -> (LOGs or new APM?)
 Instrumenting our Java code for prometheus metrics only with Springboot micrometer library (similar to option 1 but..)
 * Expose via spring lib automatically in prometheus format under actuator endpoint
-* Set up prometheus server locally with scape configurations.
+* Set up prometheus server locally with scape configurations from app
 * Twist here is, that now I configure OTEL collector in between to receive (see below 2 ways to receive it) the prometheus formatted metrics, export it to OTLP format and then later can be sent to different metrics backend or APM tools. 
-* But for demo purpose I am just logging that final resulted prom-OTLP formated metrics.
-* Complicated,but doable depends on use case what we want to acieve.
+* But for demo purpose I am just logging that final resulted prom-OTLP formatted metrics.
+* Complicated,but doable depends on use case what we want to achieve.
 * Optional Step connect the backed to metrics to Visualization tool grafana, config in docker compose
 
-### Option 3.1 with prometheus receiver
-* build by OTEL,some limitations I see and hence do not recommend yet as its immature product and developing. Major concerns are:
+### Option 3.1 using prometheus receiver 
+* Developed and supported by OTEL, in early dev phase. Do recommend extensive testing and corner use case exploration. 
 * No Prometheus server in between, actually Otel Collector will do scrape work and some more work on top of it.
-* The Prometheus receiver is meant to minimally be a drop-in replacement for Prometheus. However, there are advanced features of Prometheus that we don't support
-* Dynamic collector configuration needed to be tuned and learned from
-* read more here https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.m
+* The Prometheus receiver is meant to minimally be a drop-in replacement for Prometheus. However, there are advanced features of Prometheus that this receive will don't support.(Please check latest https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.m)
+* Dynamic collector configuration needed to be tuned and learned yet,
 * Optional Step connect the backed to metrics to Visualization tool grafana, config in docker compose
 
 ### Option 3.2 With prometheus_simple receiver
 * The Simple Prometheus is a wrapper around the Prometheus receiver
-* benefit of using Simple Prometheus receiver is that it requires less configuration than the Prometheus receiver
+* Benefit of using Simple Prometheus receiver is that it requires less configuration than the Prometheus receiver
 * Just work as Proxy, that scraps metrics from prometheus server /9090/metrics port and export to OTLP format
 * Have been used by SPLUNK or other infra services, as an option in between for metrics monitoring.  
 * Optional Step connect the backed to metrics to Visualization tool grafana, config in docker compose
