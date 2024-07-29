@@ -5,7 +5,7 @@ There are many ways you can configure your app to expose metrics, see Excalidraw
 # Disclaimer
 The POC is purely for learning/exploration purpose locally and can have bugs or misconfigurations for diff env or machines. Needed proper testing correct optimizations.
 
-Few options have been tried under this POC
+Few options have been explored as POC in this project
 ## Option 1, App(prometheus metrics)-> Prometheus server
 Instrumenting our Java code for prometheus metrics only with Springboot micrometer library https://spring.io/blog/2022/10/12/observability-with-spring-boot-3
 * Expose via lib spring micrometer prometheus (micrometer-registry-prometheus) automatically in prometheus format under actuator endpoint
