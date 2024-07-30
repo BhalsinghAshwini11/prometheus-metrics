@@ -1,6 +1,6 @@
 # Getting Started
 Please note this is gradle project and latest java and spring boot!!
-There are many ways you can configure your app to expose metrics, see Excalidraw in the project linked. 
+There are many ways you can configure your app to expose metrics, see metrics.png in the project linked.
 
 # Disclaimer
 The POC is purely for learning/exploration purpose locally and can have bugs or misconfigurations for diff env or machines. Needed proper testing correct optimizations.
@@ -29,8 +29,9 @@ Instrumenting our Java code for prometheus metrics only with Springboot micromet
 * Complicated,but doable depends on use case what we want to achieve.
 * Optional Step connect the backed to metrics to Visualization tool grafana, config in docker compose
 
-### Option 3.1 using prometheus receiver 
-* Developed and supported by OTEL, in early dev phase. Do recommend extensive testing and corner use case exploration. 
+### Option 3.1 using prometheus receiver
+* Not avaible in code atm, Can be used added as receiver in Otel.config pipeline. But based on testing and trial it seems like it is in early dev phase. 
+* Developed and supported by OTEL. I recommend extensive testing and corner use case exploration. 
 * No Prometheus server in between, actually Otel Collector will do scrape work and some more work on top of it.
 * The Prometheus receiver is meant to minimally be a drop-in replacement for Prometheus. However, there are advanced features of Prometheus that this receive will don't support.(Please check latest https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.m)
 * Dynamic collector configuration needed to be tuned and learned yet,
